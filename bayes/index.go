@@ -640,10 +640,10 @@ func (*NaiveBayes) getTree(models map[string][]string, b *NaiveBayes) Json {
 		if len(branchData.body) == 0 {
 			_c := ""
 			for c := range b.class {
-				_c = c
+				_c = fmt.Sprintf("%v=%v", b.classifier, c)
 				break
 			}
-			data[fmt.Sprintf("%v=?", branch)] = _c
+			data[branch] = _c
 			continue
 		}
 
@@ -666,7 +666,7 @@ func (*NaiveBayes) getTree(models map[string][]string, b *NaiveBayes) Json {
 			for c := range b.class {
 				bodySameData = append(bodySameData, c)
 			}
-			data[fmt.Sprintf("%v=?", branch)] = fmt.Sprintf("%v=%v", b.classifier, strings.Join(bodySameData, "|"))
+			data[branch] = fmt.Sprintf("%v=%v", b.classifier, strings.Join(bodySameData, "|"))
 			continue
 		}
 
@@ -678,13 +678,13 @@ func (*NaiveBayes) getTree(models map[string][]string, b *NaiveBayes) Json {
 			}
 		}
 		if isSame {
-			data[fmt.Sprintf("%v=?", branch)] = fmt.Sprintf("%v=%v", b.classifier, cData)
+			data[branch] = fmt.Sprintf("%v=%v", b.classifier, cData)
 			continue
 		}
 
-		data[fmt.Sprintf("%v=?", branch)] = b.getTree(models, branchData)
+		data[branch] = b.getTree(models, branchData)
 	}
-	return Json{root: data}
+	return Json{fmt.Sprintf("%v=?", root): data}
 }
 
 func (b *NaiveBayes) PrintRaw(w io.Writer) {
