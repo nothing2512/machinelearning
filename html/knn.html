@@ -43,9 +43,9 @@
     <script src="//unpkg.com/alpinejs"></script>
     <script>
         Alpine.data("data", () => ({
-            dataset: "",
-            x: 0,
-            y: 0,
+            dataset: "1,1,1,2,3,3,3,4,5\n1,2,4,3,0,2,5,4,3\n+,-,-,+,+,+,-,-,-",
+            x: 4,
+            y: 2,
             output: "",
             cmd: "",
             exec() {
@@ -55,8 +55,8 @@
                         command: this.cmd,
                         knn: {
                             data: this.dataset,
-                            x: this.x,
-                            y: this.y
+                            x: parseInt(this.x),
+                            y: parseInt(this.y)
                         },
                     }),
                 }).then(res => res.text()).then(res => {
