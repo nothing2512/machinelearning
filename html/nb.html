@@ -99,6 +99,7 @@
                     table.appendChild(thead)
                     const tableContainer = document.createElement('div');
                     tableContainer.setAttribute("class", "border border-dark rounded mb-3")
+                    tableContainer.style.overflowX = "scroll"
                     tableContainer.appendChild(table)
                     tree.appendChild(tableContainer);
                 }
