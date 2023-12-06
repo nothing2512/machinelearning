@@ -259,7 +259,7 @@ func (b *NaiveBayes) predict(w io.Writer, c string, data []string) float64 {
 		divKey := fmt.Sprintf("%v-%v", data[k], c)
 		value := b.tables[header][divKey]
 		divider := b.tableDividers[header][c]
-		steps[1] = append(steps[1], fmt.Sprintf("(%v/%v)", value, divider))
+		steps[1] = append(steps[1], fmt.Sprintf("<sup>%v</sup>/<sub>%v</sub>", value, divider))
 		values *= value
 		dividers *= divider
 	}
@@ -269,7 +269,7 @@ func (b *NaiveBayes) predict(w io.Writer, c string, data []string) float64 {
 		cDiv += v
 	}
 	steps[0] = append(steps[0], fmt.Sprintf("P(%v)", c))
-	steps[1] = append(steps[1], fmt.Sprintf("(%v/%v)", b.class[c], cDiv))
+	steps[1] = append(steps[1], fmt.Sprintf("<sup>%v</sup>/<sub>%v</sub>", b.class[c], cDiv))
 
 	values *= b.class[c]
 	dividers *= cDiv
@@ -398,7 +398,7 @@ func (b *NaiveBayes) ShowGains(w io.Writer) (col string, vals []string) {
 			var steps []string
 			for c := range b.class { // c=true, cVal=10
 				toDivide := float64(v[k+"-"+c])
-				steps = append(steps, fmt.Sprintf("((%v/%v) log(%v/%v))", toDivide, d, toDivide, d))
+				steps = append(steps, fmt.Sprintf("(<sup>%v</sup>/<sub>%v</sub>)log₂(<sup>%v</sup>/<sub>%v</sub>)", toDivide, d, toDivide, d))
 				val := toDivide / float64(d)
 				value += val * math.Log2(val)
 			}
@@ -407,8 +407,8 @@ func (b *NaiveBayes) ShowGains(w io.Writer) (col string, vals []string) {
 				value = 0
 			}
 			fmt.Fprint(w, fmt.Sprintf("Ent(%v) = -(%v) = %.3f", k, strings.Join(steps, " + "), value))
-			gainSteps = append(gainSteps, fmt.Sprintf("((%v/%v) * %.3f)", d, totalData, value))
-			ivSteps = append(steps, fmt.Sprintf("((%v/%v) log(%v/%v))", d, totalData, d, totalData))
+			gainSteps = append(gainSteps, fmt.Sprintf("%.3f(<sup>%v</sup>/<sub>%v</sub>)", value, d, totalData))
+			ivSteps = append(steps, fmt.Sprintf("(<sup>%v</sup>/<sub>%v</sub>)log₂(<sup>%v</sup>/<sub>%v</sub>)", d, totalData, d, totalData))
 			gainSub += float64(d) * value / float64(totalData)
 			iv += (float64(d) / float64(totalData)) * math.Log2(float64(d)/float64(totalData))
 			fmt.Fprint(w, "\n")
@@ -526,7 +526,7 @@ func (b *NaiveBayes) GetRoot() (col string) {
 			var steps []string
 			for c := range b.class { // c=true, cVal=10
 				toDivide := float64(v[k+"-"+c])
-				steps = append(steps, fmt.Sprintf("((%v/%v) log(%v/%v))", toDivide, d, toDivide, d))
+				steps = append(steps, fmt.Sprintf("(<sup>%v</sup>/<sub>%v</sub>)log₂(<sup>%v</sup>/<sub>%v</sub>)", toDivide, d, toDivide, d))
 				val := toDivide / float64(d)
 				value += val * math.Log2(val)
 			}
