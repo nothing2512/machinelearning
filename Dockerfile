@@ -1,7 +1,5 @@
 FROM golang:1.21.5
 
-RUN apk update && apk add --no-cache git
-
 WORKDIR /app
 
 COPY . .
