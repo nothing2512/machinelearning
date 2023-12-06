@@ -46,11 +46,12 @@ func (k *KNN) Count(w io.Writer, x, y int) {
 	steps = append(steps, "\nCalculate\n")
 	for i := range k.X {
 		val := math.Pow((float64(x-k.X[i])), 2) + math.Pow((float64(y-k.Y[i])), 2)
-		step := fmt.Sprintf("ex%v = %v(%v-%v)%v + (%v-%v)%v = %v%v (%v)\n",
+		step := fmt.Sprintf("ex%v = %v(%v-%v)%v + (%v-%v)%v = %v%v%v + %v%v = %v%v (%v)\n",
 			i+1,
 			ROOT,
 			x, k.X[i], SQUARE,
 			y, k.Y[i], SQUARE,
+			ROOT, math.Pow((float64(x-k.X[i])), 2), SQUARE, math.Pow((float64(y-k.Y[i])), 2), SQUARE,
 			ROOT,
 			val,
 			k.class[i],
