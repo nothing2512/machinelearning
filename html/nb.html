@@ -46,10 +46,14 @@
             input: "",
             output: "",
             cmd: "",
+            trained: false,
+            context: "main",
+            isDataAdded: false,
             exec() {
                 fetch("/api/nb/command", {
                     method: "POST",
                     body: JSON.stringify({
+                        context: this.context,
                         command: this.cmd,
                         data: this.input,
                     }),
@@ -59,6 +63,7 @@
                     $('#tree').html('')
                     $('#table').html('')
                     this.output = ""
+
                     if (this.cmd == "tree") {
                         $('#tree').jsonViewer(JSON.parse(res), { collapsed: false });
                     } else if (this.cmd == "showTables") {
@@ -68,6 +73,9 @@
                             this.output += `<p>${x}</p>`
                         }
                     }
+
+                    if (this.cmd == "parse") this.isDataAdded = true;
+                    if (this.cmd == "splitTrainData") this.trained = true;
                 })
             },
             showTables(data) {
@@ -120,30 +128,44 @@
             </div>
         </div>
         <div class="row mb-3">
-            <div class="col-12 mb-3">
+            <div class="mb-3" x-bind:class="trained ? 'col-6' : 'col-12'">
                 <button x-on:click="cmd='parse'" class="btn btn-outline-dark w-100" data-bs-toggle="modal"
-                    data-bs-target="#modal">Add Dataset</button>
+                    data-bs-target="#modal" x-text="isDataAdded ? 'Update dataset' : 'Add Dataset'"></button>
             </div>
-            <div class="col-6 col-lg-2 mb-3">
+            <div class="col-6 mb-3" x-bind:class="trained ? '' : 'd-none'">
+                <select class="form-control" x-model="context">
+                    <option value="main">Main Data</option>
+                    <option value="train">Train Data</option>
+                    <option value="test">Test Data</option>
+                </select>
+            </div>
+            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='showTables';exec()" class="btn btn-dark w-100">Show Tables</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3">
+            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='smooth'" class="btn btn-dark w-100" data-bs-toggle="modal"
                     data-bs-target="#modal">Smooth</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3">
+            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='tree';exec()" class="btn btn-dark w-100">Tree</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3">
+            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='root';exec()" class="btn btn-dark w-100">Root</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3">
+            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='predict'" class="btn btn-dark w-100" data-bs-toggle="modal"
                     data-bs-target="#modal">Predict</button>
             </div>
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-lg-2" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='append'" class="btn btn-dark w-100" data-bs-toggle="modal"
                     data-bs-target="#modal">Append</button>
+            </div>
+            <div class="col-6 col-lg-2" x-bind:class="isDataAdded ? '' : 'd-none'">
+                <button x-on:click="cmd='raw';exec()" class="btn btn-dark w-100">Show Raw</button>
+            </div>
+            <div class="col-6 col-lg-2" x-bind:class="!isDataAdded || context != 'main' ? 'd-none' : ''">
+                <button x-on:click="cmd='splitTrainData'" class="btn btn-dark w-100" data-bs-toggle="modal"
+                    data-bs-target="#modal">Split Train</button>
             </div>
         </div>
         <div class="row mb-3">
@@ -161,7 +183,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h1>Dataset</h1>
+                    <h1>Input</h1>
                     <textarea x-model="input" class="bg-dark w-100 rounded px-2 py-1 text-white"
                         style="height: 200px;"></textarea>
                     <div class="d-flex justify-content-between">

@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"main/bayes"
 	"net/http"
 	"strconv"
@@ -18,26 +17,104 @@ func (idb *InDb) NB(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if cmd.Command == "showTables" {
-		idb.nb.ShowTables(w)
+		switch cmd.Context {
+		case "train":
+			idb.nb.Train.ShowTables(w)
+			break
+		case "test":
+			idb.nb.Test.ShowTables(w)
+			break
+		default:
+			idb.nb.ShowTables(w)
+		}
 	}
 
 	if cmd.Command == "smooth" {
 		num, _ := strconv.Atoi(cmd.Data)
-		idb.nb.Smooth(num)
-		fmt.Println(num)
+		switch cmd.Context {
+		case "train":
+			idb.nb.Train.Smooth(num)
+			break
+		case "test":
+			idb.nb.Test.Smooth(num)
+			break
+		default:
+			idb.nb.Smooth(num)
+		}
 	}
 	if cmd.Command == "tree" {
-		idb.nb.DecisionTree(w, true)
+		switch cmd.Context {
+		case "train":
+			idb.nb.Train.DecisionTree(w, true)
+			break
+		case "test":
+			idb.nb.Test.DecisionTree(w, true)
+			break
+		default:
+			idb.nb.DecisionTree(w, true)
+		}
 	}
 	if cmd.Command == "root" {
-		idb.nb.ShowClassEntrophy(w)
-		root, _ := idb.nb.ShowGains(w)
-		_, _ = w.Write([]byte(root))
+		switch cmd.Context {
+		case "train":
+			idb.nb.Train.ShowClassEntrophy(w)
+			root, _ := idb.nb.Train.ShowGains(w)
+			_, _ = w.Write([]byte(root))
+			break
+		case "test":
+			idb.nb.Test.ShowClassEntrophy(w)
+			root, _ := idb.nb.Test.ShowGains(w)
+			_, _ = w.Write([]byte(root))
+			break
+		default:
+			idb.nb.ShowClassEntrophy(w)
+			root, _ := idb.nb.ShowGains(w)
+			_, _ = w.Write([]byte(root))
+		}
 	}
 	if cmd.Command == "predict" {
-		idb.nb.Predict(w, strings.Split(cmd.Data, ","))
+		switch cmd.Context {
+		case "train":
+			idb.nb.Train.Predict(w, strings.Split(cmd.Data, ","))
+			break
+		case "test":
+			idb.nb.Test.Predict(w, strings.Split(cmd.Data, ","))
+			break
+		default:
+			idb.nb.Predict(w, strings.Split(cmd.Data, ","))
+		}
 	}
 	if cmd.Command == "append" {
-		idb.nb.PredictAppend(w, strings.Split(cmd.Data, ","))
+		switch cmd.Context {
+		case "train":
+			idb.nb.Train.PredictAppend(w, strings.Split(cmd.Data, ","))
+			break
+		case "test":
+			idb.nb.Test.PredictAppend(w, strings.Split(cmd.Data, ","))
+			break
+		default:
+			idb.nb.PredictAppend(w, strings.Split(cmd.Data, ","))
+		}
+	}
+	if cmd.Command == "splitTrainData" {
+		var idx []int
+		for _, x := range strings.Split(cmd.Data, ",") {
+			_x, _ := strconv.Atoi(x)
+			idx = append(idx, _x)
+		}
+		idb.nb.SplitTrainData(idx)
+	}
+	if cmd.Command == "raw" {
+		switch cmd.Context {
+		case "train":
+			idb.nb.Train.PrintRaw(w)
+			break
+		case "test":
+			idb.nb.Test.PrintRaw(w)
+			break
+		default:
+			idb.nb.PrintRaw(w)
+			break
+		}
 	}
 }

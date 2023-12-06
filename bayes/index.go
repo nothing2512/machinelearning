@@ -54,6 +54,9 @@ func (b *NaiveBayes) SplitTrainData(idx []int) {
 	}
 	b.Train.SetClassifier(b.classifier)
 	b.Test.SetClassifier(b.classifier)
+
+	b.Train.Build()
+	b.Test.Build()
 }
 
 func (b *NaiveBayes) ClassifyLastHeader() {
@@ -682,4 +685,11 @@ func (*NaiveBayes) getTree(models map[string][]string, b *NaiveBayes) Json {
 		data[fmt.Sprintf("%v=?", branch)] = b.getTree(models, branchData)
 	}
 	return Json{root: data}
+}
+
+func (b *NaiveBayes) PrintRaw(w io.Writer) {
+	fmt.Fprint(w, strings.Join(b.headers, ","), "\n")
+	for _, body := range b.body {
+		fmt.Fprint(w, strings.Join(body, ","), "\n")
+	}
 }

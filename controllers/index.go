@@ -11,6 +11,7 @@ type InDb struct {
 }
 
 type CMD struct {
+	Context string `json:"context"`
 	Command string `json:"command"`
 	Data    string `json:"data"`
 	Knn     struct {
