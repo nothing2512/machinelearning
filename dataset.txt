@@ -1,3 +1,25 @@
-Gender,Car Type,Shirt Size,Class\nM,Family,Small,C0\nM,Sports,Medium,C0\nM,Sports,Medium,C0\nM,Sports,Large,C0\nM,Sports,Extra Large,C0\nM,Sports,Extra Large,C0\nF,Sports,Small,C0\nF,Sports,Small,C0\nF,Sports,Medium,C0\nF,Luxury,Large,C0\nM,Family,Large,C1\nM,Family,Extra Large,C1\nM,Family,Medium,C1\nM,Luxury,Extra Large,C1\nF,Luxury,Small,C1\nF,Luxury,Small,C1\nF,Luxury,Medium,C1\nF,Luxury,Medium,C1\nF,Luxury,Medium,C1\nF,Luxury,Large,C1
+Gender,Car Type,Shirt Size,Class
+M,Family,Small,C0
+M,Sports,Medium,C0
+M,Sports,Medium,C0
+M,Sports,Large,C0
+M,Sports,Extra Large,C0
+M,Sports,Extra Large,C0
+F,Sports,Small,C0
+F,Sports,Small,C0
+F,Sports,Medium,C0
+F,Luxury,Large,C0
+M,Family,Large,C1
+M,Family,Extra Large,C1
+M,Family,Medium,C1
+M,Luxury,Extra Large,C1
+F,Luxury,Small,C1
+F,Luxury,Small,C1
+F,Luxury,Medium,C1
+F,Luxury,Medium,C1
+F,Luxury,Medium,C1
+F,Luxury,Large,C1
 
-1,1,1,2,3,3,3,4,5\n1,2,4,3,0,2,5,4,3\n+,-,-,+,+,+,-,-,-
+1,1,1,2,3,3,3,4,5
+1,2,4,3,0,2,5,4,3
++,-,-,+,+,+,-,-,-

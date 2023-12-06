@@ -139,31 +139,31 @@
                     <option value="test">Test Data</option>
                 </select>
             </div>
-            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
+            <div class="col-6 col-lg-3 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='showTables';exec()" class="btn btn-dark w-100">Show Tables</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
+            <div class="col-6 col-lg-3 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='smooth'" class="btn btn-dark w-100" data-bs-toggle="modal"
                     data-bs-target="#modal">Smooth</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
+            <div class="col-6 col-lg-3 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='tree';exec()" class="btn btn-dark w-100">Tree</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
+            <div class="col-6 col-lg-3 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='root';exec()" class="btn btn-dark w-100">Root</button>
             </div>
-            <div class="col-6 col-lg-2 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
+            <div class="col-6 col-lg-3 mb-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='predict'" class="btn btn-dark w-100" data-bs-toggle="modal"
                     data-bs-target="#modal">Predict</button>
             </div>
-            <div class="col-6 col-lg-2" x-bind:class="isDataAdded ? '' : 'd-none'">
+            <div class="col-6 col-lg-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='append'" class="btn btn-dark w-100" data-bs-toggle="modal"
                     data-bs-target="#modal">Append</button>
             </div>
-            <div class="col-6 col-lg-2" x-bind:class="isDataAdded ? '' : 'd-none'">
+            <div class="col-6 col-lg-3" x-bind:class="isDataAdded ? '' : 'd-none'">
                 <button x-on:click="cmd='raw';exec()" class="btn btn-dark w-100">Show Raw</button>
             </div>
-            <div class="col-6 col-lg-2" x-bind:class="!isDataAdded || context != 'main' ? 'd-none' : ''">
+            <div class="col-6 col-lg-3" x-bind:class="!isDataAdded || context != 'main' ? 'd-none' : ''">
                 <button x-on:click="cmd='splitTrainData'" class="btn btn-dark w-100" data-bs-toggle="modal"
                     data-bs-target="#modal">Split Train</button>
             </div>
