@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Naive Bayes</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/json.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
+    <script>
+        const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const linkElement = document.createElement('link');
+        linkElement.setAttribute('rel', 'icon');
+        linkElement.setAttribute('type', 'image/x-icon')
+        linkElement.setAttribute('href', isDarkTheme ? '/favicon-light.png' : '/favicon-dark.png');
+        document.head.appendChild(linkElement);
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        p {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .icon {
+            width: 64px;
+        }
+
+        a.icon {
+            padding: 1rem;
+        }
+
+        a.icon .icon {
+            width: 32px;
+        }
+    </style>
+    <script src="//unpkg.com/alpinejs"></script>
+    <script>
+        Alpine.data("data", () => ({
+            input: "Gender,Car Type,Shirt Size,Class\nM,Family,Small,C0\nM,Sports,Medium,C0\nM,Sports,Medium,C0\nM,Sports,Large,C0\nM,Sports,Extra Large,C0\nM,Sports,Extra Large,C0\nF,Sports,Small,C0\nF,Sports,Small,C0\nF,Sports,Medium,C0\nF,Luxury,Large,C0\nM,Family,Large,C1\nM,Family,Extra Large,C1\nM,Family,Medium,C1\nM,Luxury,Extra Large,C1\nF,Luxury,Small,C1\nF,Luxury,Small,C1\nF,Luxury,Medium,C1\nF,Luxury,Medium,C1\nF,Luxury,Medium,C1\nF,Luxury,Large,C1",
+            output: "",
+            cmd: "",
+            exec() {
+                fetch("/api/nb/command", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        command: this.cmd,
+                        data: this.input,
+                    }),
+                }).then(res => res.text()).then(res => {
+                    this.input = ""
+                    $("#modal").modal('hide')
+                    $('#tree').html('')
+                    $('#table').html('')
+                    this.output = ""
+                    if (this.cmd == "tree") {
+                        $('#tree').jsonViewer(JSON.parse(res), { collapsed: false });
+                    } else if (this.cmd == "showTables") {
+                        this.showTables(JSON.parse(res))
+                    } else {
+                        for (let x of res.split("\n")) {
+                            this.output += `<p>${x}</p>`
+                        }
+                    }
+                })
+            },
+            showTables(data) {
+                let tree = document.getElementById("table")
+                for (let t of data) {
+                    const table = document.createElement('table');
+                    table.setAttribute("class", "table table-stripped table-bordered border-dark m-0")
+                    let thead = document.createElement('thead');
+                    let tbody = document.createElement('tbody');
+                    for (let i in t) {
+                        if (i == 0) {
+                            let tr = document.createElement("tr");
+                            for (let col of t[i]) {
+                                let td = document.createElement("td")
+                                td.innerHTML = col
+                                tr.appendChild(td)
+                            }
+                            thead.appendChild(tr)
+                        } else {
+                            let tr = document.createElement("tr");
+                            for (let col of t[i]) {
+                                let td = document.createElement("td")
+                                td.innerHTML = col
+                                tr.appendChild(td)
+                            }
+                            thead.appendChild(tr)
+                        }
+                    }
+                    table.appendChild(thead)
+                    const tableContainer = document.createElement('div');
+                    tableContainer.setAttribute("class", "border border-dark rounded mb-3")
+                    tableContainer.appendChild(table)
+                    tree.appendChild(tableContainer);
+                }
+            }
+        }))
+    </script>
+</head>
+
+<body x-data="data">
+    <div class="container-fluid">
+        <div class="row p-2 bg-dark mb-3 align-items-center">
+            <a href="/" class="icon">
+                <img class="icon" src="/back.svg">
+            </a>
+            <img class="icon" src="/favicon-light.png">
+            <div class="col">
+                <h2 class="text-white mb-0">Machine Learning</h2>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 mb-3">
+                <button x-on:click="cmd='parse'" class="btn btn-outline-dark w-100" data-bs-toggle="modal"
+                    data-bs-target="#modal">Add Dataset</button>
+            </div>
+            <div class="col-6 col-lg-2 mb-3">
+                <button x-on:click="cmd='showTables';exec()" class="btn btn-dark w-100">Show Tables</button>
+            </div>
+            <div class="col-6 col-lg-2 mb-3">
+                <button x-on:click="cmd='smooth'" class="btn btn-dark w-100" data-bs-toggle="modal"
+                    data-bs-target="#modal">Smooth</button>
+            </div>
+            <div class="col-6 col-lg-2 mb-3">
+                <button x-on:click="cmd='tree';exec()" class="btn btn-dark w-100">Tree</button>
+            </div>
+            <div class="col-6 col-lg-2 mb-3">
+                <button x-on:click="cmd='root';exec()" class="btn btn-dark w-100">Root</button>
+            </div>
+            <div class="col-6 col-lg-2 mb-3">
+                <button x-on:click="cmd='predict'" class="btn btn-dark w-100" data-bs-toggle="modal"
+                    data-bs-target="#modal">Predict</button>
+            </div>
+            <div class="col-6 col-lg-2">
+                <button x-on:click="cmd='append'" class="btn btn-dark w-100" data-bs-toggle="modal"
+                    data-bs-target="#modal">Append</button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <h3 class="text-dark">Output</h3>
+                <div class="text-dark w-100" x-html="output"></div>
+                <div class="text-dark w-100" id="tree"></div>
+                <div class="text-dark w-100" id="table"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h1>Dataset</h1>
+                    <textarea x-model="input" class="bg-dark w-100 rounded px-2 py-1 text-white"
+                        style="height: 200px;"></textarea>
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button x-on:click="exec" type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="/json.js"></script>
+</body>
+
+</html>
