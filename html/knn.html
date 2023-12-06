@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>K-Nearest Neighbor</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/json.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap">
+    <script>
+        const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const linkElement = document.createElement('link');
+        linkElement.setAttribute('rel', 'icon');
+        linkElement.setAttribute('type', 'image/x-icon')
+        linkElement.setAttribute('href', isDarkTheme ? '/favicon-light.png' : '/favicon-dark.png');
+        document.head.appendChild(linkElement);
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        p {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .icon {
+            width: 64px;
+        }
+
+        a.icon {
+            padding: 1rem;
+        }
+
+        a.icon .icon {
+            width: 32px;
+        }
+    </style>
+    <script src="//unpkg.com/alpinejs"></script>
+    <script>
+        Alpine.data("data", () => ({
+            dataset: "",
+            x: 0,
+            y: 0,
+            output: "",
+            cmd: "",
+            exec() {
+                fetch("/api/knn/command", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        command: this.cmd,
+                        knn: {
+                            data: this.dataset,
+                            x: this.x,
+                            y: this.y
+                        },
+                    }),
+                }).then(res => res.text()).then(res => {
+                    this.input = ""
+                    $("#modal").modal('hide')
+                    this.output = ""
+                    for (let x of res.split("\n")) {
+                        this.output += `<p>${x}</p>`
+                    }
+                })
+            },
+        }))
+    </script>
+</head>
+
+<body x-data="data">
+    <div class="container-fluid">
+        <div class="row p-2 bg-dark mb-3 align-items-center">
+            <a href="/" class="icon">
+                <img class="icon" src="/back.svg">
+            </a>
+            <img class="icon" src="/favicon-light.png">
+            <div class="col">
+                <h2 class="text-white mb-0">K-Nearest Neighbor</h2>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12 mb-3">
+                <textarea x-model="dataset" class="text-dark bordered w-100 px-1 py-2" placeholder="dataset" style="min-height: 6rem;"></textarea>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <input class="form-control" type="number" placeholder="X" x-model="x">
+                    </div>
+                    <div class="col-6">
+                        <input class="form-control" type="number" placeholder="Y" x-model="y">
+                    </div>
+                </div>
+                <button x-on:click="exec" class="btn btn-outline-dark w-100">Count</button>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <h3 class="text-dark">Output</h3>
+                <div class="text-dark w-100" x-html="output"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -15,7 +15,8 @@ func main() {
 	c := controllers.InDb{}
 
 	backends := map[string]http.HandlerFunc{
-		"/api/nb/command": c.Command,
+		"/api/nb/command":  c.NB,
+		"/api/knn/command": c.KNN,
 	}
 
 	http.HandleFunc("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -9,12 +9,7 @@ import (
 	"strings"
 )
 
-type CMD struct {
-	Command string `json:"command"`
-	Data    string `json:"data"`
-}
-
-func (idb *InDb) Command(w http.ResponseWriter, r *http.Request) {
+func (idb *InDb) NB(w http.ResponseWriter, r *http.Request) {
 	var cmd CMD
 	_ = json.NewDecoder(r.Body).Decode(&cmd)
 	if cmd.Command == "parse" {
@@ -45,8 +40,4 @@ func (idb *InDb) Command(w http.ResponseWriter, r *http.Request) {
 	if cmd.Command == "append" {
 		idb.nb.PredictAppend(w, strings.Split(cmd.Data, ","))
 	}
-	// idb.nb.ShowTables(w)
-	// idb.nb.Predict(w, []string{"M", "Family", "Small"})
-	// idb.nb.ClassifyLastHeader()
-	// idb.nb.DecisionTree(w, true)
 }
