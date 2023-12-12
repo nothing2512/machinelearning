@@ -19,4 +19,11 @@ type CMD struct {
 		X    int    `json:"x"`
 		Y    int    `json:"y"`
 	} `json:"knn"`
+	Ann struct {
+		Inputs       []float64 `json:"inputs"`
+		Targets      []float64 `json:"targets"`
+		LearningRate float64   `json:"learningRate"`
+		Epoch        int       `json:"epoch"`
+		ShowWeight   bool      `json:"showWeight"`
+	}
 }

@@ -17,6 +17,7 @@ func main() {
 	backends := map[string]http.HandlerFunc{
 		"/api/nb/command":  c.NB,
 		"/api/knn/command": c.KNN,
+		"/api/ann/command": c.ANN,
 	}
 
 	http.HandleFunc("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

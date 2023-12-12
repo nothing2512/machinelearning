@@ -58,18 +58,15 @@ func (idb *InDb) NB(w http.ResponseWriter, r *http.Request) {
 		switch cmd.Context {
 		case "train":
 			idb.nb.Train.ShowClassEntrophy(w)
-			root, _ := idb.nb.Train.ShowGains(w)
-			_, _ = w.Write([]byte(root))
+			idb.nb.Train.ShowGains(w)
 			break
 		case "test":
 			idb.nb.Test.ShowClassEntrophy(w)
-			root, _ := idb.nb.Test.ShowGains(w)
-			_, _ = w.Write([]byte(root))
+			idb.nb.Test.ShowGains(w)
 			break
 		default:
 			idb.nb.ShowClassEntrophy(w)
-			root, _ := idb.nb.ShowGains(w)
-			_, _ = w.Write([]byte(root))
+			idb.nb.ShowGains(w)
 		}
 	}
 	if cmd.Command == "predict" {
