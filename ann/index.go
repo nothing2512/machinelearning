@@ -155,11 +155,12 @@ func (*NeuralNetwork) sfToSs(data []float64) []string {
 func (nn *NeuralNetwork) Calculate(epoch int) {
 
 	fmt.Fprintf(nn.w, "<b>Initialize</b><br>")
-	fmt.Fprintf(nn.w, fmt.Sprintf("Bias :%v<br>", strings.Join(nn.sfToSs(nn.Bias), ", ")))
+	fmt.Fprintf(nn.w, fmt.Sprintf("Bias : %v<br>", strings.Join(nn.sfToSs(nn.Bias), ", ")))
 	fmt.Fprintf(nn.w, "Weight :<br>")
 	for _, x := range nn.Weights {
 		fmt.Fprintf(nn.w, fmt.Sprintf("[ %v ]<br>", strings.Join(nn.sfToSs(x), ", ")))
 	}
+	fmt.Fprintf(nn.w, "<br>")
 
 	inputs := nn.Input
 	targets := nn.Target
