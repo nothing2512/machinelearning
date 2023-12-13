@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"math"
+	"math/rand"
+	"strconv"
 	"strings"
 )
 
@@ -24,11 +26,19 @@ func NewNeuralNetwork(w io.Writer, inputs, targets []float64, learningRate float
 	inputSize := len(inputs)
 	outputSize := len(targets)
 
-	weights := make([][]float64, outputSize)
-	for i := range weights {
-		weights[i] = make([]float64, inputSize)
+	// weights := make([][]float64, outputSize)
+	var weights [][]float64
+	for i := 0; i < outputSize; i++ {
+		var weight []float64
+		for j := 0; j < inputSize; j++ {
+			weight = append(weight, rand.Float64())
+		}
+		weights = append(weights, weight)
 	}
-	bias := make([]float64, outputSize)
+	var bias []float64
+	for i := 0; i < outputSize; i++ {
+		bias = append(bias, rand.Float64())
+	}
 
 	return &NeuralNetwork{
 		InputSize:    inputSize,
@@ -61,12 +71,12 @@ func (nn *NeuralNetwork) ForwardPass(inputs []float64) []float64 {
 			z += nn.Weights[i][j] * inputs[j]
 		}
 
-		fmt.Fprintf(nn.w, fmt.Sprintf("X%v = %v<br>", i+1, strings.Join(steps, " + ")))
-		fmt.Fprintf(nn.w, fmt.Sprintf("X%v = %v<br>", i+1, z))
-		fmt.Fprintf(nn.w, fmt.Sprintf("(sigmoid activation) X%v = 1 / ( 1 + e<sup>%v</sup> )<br>", i+1, z))
+		fmt.Fprintf(nn.w, fmt.Sprintf("X%v = σ(%v)<br>", i+1, strings.Join(steps, " + ")))
+		fmt.Fprintf(nn.w, fmt.Sprintf("X%v = σ(%v)<br>", i+1, z))
+		fmt.Fprintf(nn.w, fmt.Sprintf("X%v = 1 / ( 1 + e<sup>%v</sup> )<br>", i+1, z))
 		// Apply activation function (sigmoid)
 		outputs[i] = sigmoid(z)
-		fmt.Fprintf(nn.w, fmt.Sprintf("(sigmoid activation) X%v = %v<br>", i+1, outputs[i]))
+		fmt.Fprintf(nn.w, fmt.Sprintf("X%v = %v<br>", i+1, outputs[i]))
 		fmt.Fprintf(nn.w, "<br>")
 	}
 
@@ -94,11 +104,13 @@ func (nn *NeuralNetwork) BackwardPass(inputs, targets []float64) {
 
 		// Update bias
 		nn.Bias[i] += nn.LearningRate * error
+		fmt.Fprintf(nn.w, "Update Bias<br>")
 		fmt.Fprintf(nn.w, fmt.Sprintf("B%v = learningRate * E%v<br>", i+1, i+1))
 		fmt.Fprintf(nn.w, fmt.Sprintf("B%v = %v * %v<br>", i+1, nn.LearningRate, error))
 		fmt.Fprintf(nn.w, fmt.Sprintf("B%v = %.3f<br>", i+1, nn.Bias[i]))
 		fmt.Fprintf(nn.w, "<br>")
 
+		fmt.Fprintf(nn.w, "Update Weight<br>")
 		for j := 0; j < nn.InputSize; j++ {
 			if nn.showWeight {
 				fmt.Fprintf(nn.w, fmt.Sprintf("W<sub>%v%v</sub> = W<sub>%v%v</sub> + (learningRate * E%v * I%v)<br>", i+1, j+1, i+1, j+1, i+1, j+1))
@@ -132,7 +144,23 @@ func (nn *NeuralNetwork) CalculateError(outputs []float64) float64 {
 	return sumError / float64(len(nn.Target))
 }
 
+func (*NeuralNetwork) sfToSs(data []float64) []string {
+	var str []string
+	for _, v := range data {
+		str = append(str, strconv.FormatFloat(v, 'f', -1, 64))
+	}
+	return str
+}
+
 func (nn *NeuralNetwork) Calculate(epoch int) {
+
+	fmt.Fprintf(nn.w, "<b>Initialize</b><br>")
+	fmt.Fprintf(nn.w, fmt.Sprintf("Bias :%v<br>", strings.Join(nn.sfToSs(nn.Bias), ", ")))
+	fmt.Fprintf(nn.w, "Weight :<br>")
+	for _, x := range nn.Weights {
+		fmt.Fprintf(nn.w, fmt.Sprintf("[ %v ]<br>", strings.Join(nn.sfToSs(x), ", ")))
+	}
+
 	inputs := nn.Input
 	targets := nn.Target
 	for _epoch := 0; _epoch < epoch; _epoch++ {
